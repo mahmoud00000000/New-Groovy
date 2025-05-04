@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Groovy Shopping</string>
+    <string name="pleseLogin">mahmoud</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="rightAddress">The Right Address\nFor Shopping\nAnyday</string>
+    <string name="quality">It is very easy to reach the\nbest quality among the\nproducts on the internet!</string>
+    <string name="don_t_have_an_account_register"><u>Don\'t have an account? Register</u></string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="do_you_have_an_account_login"><u>Do you have an account? Login</u></string>
+</resources>
