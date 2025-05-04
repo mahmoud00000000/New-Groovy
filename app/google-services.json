@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "667849077796",
+    "project_id": "groovy-shopping-b0c17",
+    "storage_bucket": "groovy-shopping-b0c17.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667849077796:android:52383a26eaedb43f9454b1",
+        "android_client_info": {
+          "package_name": "com.example.groovyshopping"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMK6ipQM7bZct5B0n-IvSVFgcUqgJmme4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

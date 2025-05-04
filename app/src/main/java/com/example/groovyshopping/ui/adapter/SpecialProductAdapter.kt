@@ -1,0 +1,68 @@
+package com.example.groovyshopping.ui.adapter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.groovyshopping.data.Product
+import com.example.groovyshopping.databinding.SpecialRvItemBinding
+
+
+class SpecialProductsAdapter :
+    RecyclerView.Adapter<SpecialProductsAdapter.SpecialProductsViewHolder>() {
+
+    inner class SpecialProductsViewHolder(val binding: SpecialRvItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(product: Product) {
+            binding.product = product
+            binding.executePendingBindings() // لتحديث البيانات فورًا
+
+            Glide.with(binding.imageSpecialRvItem.context)
+                .load(product.images)
+                .into(binding.imageSpecialRvItem)
+
+            binding.tvSpecialProductName.text = product.name
+            binding.tvSpecialProductPrice.text = product.price.toString()
+        }
+    }
+
+    private val diffCallback = object : DiffUtil.ItemCallback<Product>() {
+        override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    val differ = AsyncListDiffer(this, diffCallback)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecialProductsViewHolder {
+        val binding = SpecialRvItemBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
+        return SpecialProductsViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: SpecialProductsViewHolder, position: Int) {
+        val product = differ.currentList[position]
+        holder.bind(product)
+
+//        Glide.with(holder.itemView.context)
+//            .load(product.image)
+//            .into(holder.binding.imageSpecialRvItem)
+
+
+        holder.itemView.setOnClickListener {
+            onClick?.invoke(product)
+        }
+    }
+
+    override fun getItemCount(): Int = differ.currentList.size
+
+    var onClick: ((Product) -> Unit)? = null
+}
