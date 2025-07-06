@@ -2,9 +2,9 @@ package com.homecookapp.user.utils
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.homecookapp.user.data.models.AddressResponse
-import com.homecookapp.user.data.models.CountryDataModel
-import com.homecookapp.user.data.models.UserDataModel
+import com.example.groovyshopping.user.data.models.AddressResponse
+import com.example.groovyshopping.user.data.models.CountryDataModel
+import com.example.groovyshopping.user.data.models.UserDataModel
 
 
 class AppManger constructor(var sharedPreferences: SharedPreferences) {
@@ -65,14 +65,14 @@ class AppManger constructor(var sharedPreferences: SharedPreferences) {
         }
     }
 
-    fun saveSetting(loginData: com.homecookapp.user.data.remote.DefaultData) {
+    fun saveSetting(loginData: com.example.groovyshopping.user.data.remote.DefaultData) {
         sharedPreferences.edit().putString(SETTING, Gson().toJson(loginData)).apply()
     }
 
-    fun getSetting(): com.homecookapp.user.data.remote.DefaultData? {
+    fun getSetting(): com.example.groovyshopping.user.data.remote.DefaultData? {
         val user = sharedPreferences.getString(SETTING, "")
         return user?.let {
-            Gson().fromJson(user, com.homecookapp.user.data.remote.DefaultData::class.java)
+            Gson().fromJson(user, com.example.groovyshopping.user.data.remote.DefaultData::class.java)
         }
     }
 

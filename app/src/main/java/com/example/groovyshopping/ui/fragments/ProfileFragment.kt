@@ -7,7 +7,7 @@ import com.example.groovyshopping.databinding.FragmentProfileBinding
 import com.example.groovyshopping.ui.AuthViewModel
 import com.example.groovyshopping.ui.activities.LoginActivity
 import com.example.groovyshopping.ui.activities.LoginRegisterActivity
-import com.homecookapp.user.base.BaseFragment
+import com.example.groovyshopping.user.base.BaseFragment
 import kotlin.reflect.KClass
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding, AuthViewModel>(){

@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentSearchBinding
 import com.example.groovyshopping.ui.AuthViewModel
-import com.homecookapp.user.base.BaseFragment
+import com.example.groovyshopping.user.base.BaseFragment
 import kotlin.reflect.KClass
 
 class SearchFragment : BaseFragment<FragmentSearchBinding, AuthViewModel>(){

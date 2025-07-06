@@ -13,7 +13,7 @@ import com.example.groovyshopping.ui.categories.FurnitureFragment
 import com.example.groovyshopping.ui.categories.MainCategory
 import com.example.groovyshopping.ui.categories.TableFragment
 import com.google.android.material.tabs.TabLayoutMediator
-import com.homecookapp.user.base.BaseFragment
+import com.example.groovyshopping.user.base.BaseFragment
 import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<FragmentHomeBinding, AuthViewModel>(){

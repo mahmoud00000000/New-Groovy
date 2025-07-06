@@ -11,7 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.groovyshopping.user.data.models.Product
+import com.example.groovyshopping.data.Product
 import com.example.groovyshopping.user.data.models.UserDataModel
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
 import com.homecookapp.user.utils.AppManger
@@ -40,6 +40,13 @@ class AuthViewModel constructor(
     val _specialProduct = MutableStateFlow<Resource<List<Product>>>(
         Resource.success(emptyList())  // أو Resource.error("Initial state") لكن دي مش مناسبة هنا
     )
+    val _bestDealsProduct = MutableStateFlow<Resource<List<Product>>>(
+        Resource.success(emptyList())  // أو Resource.error("Initial state") لكن دي مش مناسبة هنا
+    )
+
+    val _bestProduct = MutableStateFlow<Resource<List<Product>>>(
+        Resource.success(emptyList())  // أو Resource.error("Initial state") لكن دي مش مناسبة هنا
+    )
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -48,6 +55,8 @@ class AuthViewModel constructor(
     fun fetchProducts() {
         viewModelScope.launch {
             _specialProduct.value = Resource.loading() // ممكن تكتب null أو تسيبها فاضية
+            _bestDealsProduct.value = Resource.loading()
+            _bestProduct.value = Resource.loading()
 
             try {
                 val snapshot = firestore.collection("products").get().await()
@@ -56,8 +65,12 @@ class AuthViewModel constructor(
                 Log.d("FirestoreTest", "Products: $products")
 
                 _specialProduct.value = Resource.success(products)
+                _bestDealsProduct.value = Resource.success(products)
+                _bestProduct.value = Resource.success(products)
             } catch (e: Exception) {
                 _specialProduct.value = Resource.error(e.message ?: "Unknown error")
+                _bestDealsProduct.value = Resource.error(e.message ?: "Unknown error")
+                _bestProduct.value = Resource.error(e.message ?: "Unknown error")
             }
         }
     }
@@ -97,6 +110,8 @@ class AuthViewModel constructor(
 
         logoutSuccess.value = true
     }
+
+
 }
 
 

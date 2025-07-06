@@ -36,7 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import com.bumptech.glide.Glide
-import com.homecookapp.user.application.Application
+import com.example.groovyshopping.user.application.Application
 import java.io.File
 
 object BindingAdapters {

@@ -6,28 +6,34 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.groovyshopping.data.Product
-import com.example.groovyshopping.databinding.SpecialRvItemBinding
+import com.example.groovyshopping.databinding.BestDealsRvItemBinding
 
+class BestDealsAdapter : RecyclerView.Adapter<BestDealsAdapter.BestDealsViewHolder>() {
 
-class SpecialProductsAdapter :
-    RecyclerView.Adapter<SpecialProductsAdapter.SpecialProductsViewHolder>() {
-
-    inner class SpecialProductsViewHolder(val binding: SpecialRvItemBinding) :
+    inner class BestDealsViewHolder(val binding: BestDealsRvItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(product: Product) {
             binding.product = product
             binding.executePendingBindings()
 
-            Glide.with(binding.imageSpecialRvItem.context)
+            Glide.with(binding.imgBestDeal.context)
                 .load(product.images.firstOrNull())
-                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
-                .into(binding.imageSpecialRvItem)
+                .into(binding.imgBestDeal)
 
-            binding.tvSpecialProductName.text = product.name
-            binding.tvSpecialProductPrice.text = product.price.toString()
+            // حساب السعر بعد الخصم لو فيه
+            product.offerPercentage?.let {
+                val remainingPricePercentage = 1f - it
+                val priceAfterOffer = remainingPricePercentage * product.price
+                binding.tvNewPrice.text = "$ ${String.format("%.2f", priceAfterOffer)}"
+            }
+
+            binding.tvOldPrice.text = "$ ${product.price}"
+            binding.tvDealProductName.text = product.name
         }
     }
 
@@ -43,21 +49,16 @@ class SpecialProductsAdapter :
 
     val differ = AsyncListDiffer(this, diffCallback)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpecialProductsViewHolder {
-        val binding = SpecialRvItemBinding.inflate(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BestDealsViewHolder {
+        val binding = BestDealsRvItemBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return SpecialProductsViewHolder(binding)
+        return BestDealsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: SpecialProductsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BestDealsViewHolder, position: Int) {
         val product = differ.currentList[position]
         holder.bind(product)
-
-//        Glide.with(holder.itemView.context)
-//            .load(product.image)
-//            .into(holder.binding.imageSpecialRvItem)
-
 
         holder.itemView.setOnClickListener {
             onClick?.invoke(product)
