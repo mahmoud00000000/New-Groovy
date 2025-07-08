@@ -54,6 +54,10 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
                         hideLoading()
                         Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
                     }
+                    Resource.Status.UNSPECIFIED -> {
+                        hideLoading()
+                        Log.w("Status", "UNSPECIFIED")
+                    }
                 }
             }
         }
@@ -77,6 +81,10 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
                         hideLoading()
                         Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
                     }
+                    Resource.Status.UNSPECIFIED -> {
+                        hideLoading()
+                        Log.w("Status", "UNSPECIFIED")
+                    }
                 }
             }
         }
@@ -99,6 +107,10 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
                     Resource.Status.ERROR -> {
                         hideLoading()
                         Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
+                    }
+                    Resource.Status.UNSPECIFIED -> {
+                        hideLoading()
+                        Log.w("Status", "UNSPECIFIED")
                     }
                 }
             }

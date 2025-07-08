@@ -1,5 +1,6 @@
 package com.example.groovyshopping.ui.categories
 
+
 import android.os.Bundle
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentChairBinding
@@ -7,8 +8,8 @@ import com.example.groovyshopping.ui.AuthViewModel
 import com.example.groovyshopping.user.base.BaseFragment
 import kotlin.reflect.KClass
 
-class ChairFragment : BaseFragment<FragmentChairBinding, AuthViewModel>(){
-    override fun layoutResource(): Int = R.layout.fragment_chair
+class ChairFragment : BaseCategoryFragment("chair"){
+    override fun layoutResource(): Int = R.layout.fragment_base_category
 
 
 
@@ -22,14 +23,14 @@ class ChairFragment : BaseFragment<FragmentChairBinding, AuthViewModel>(){
 
     override fun observer() {
 
+
+
     }
 
     override fun clicks() {
 
     }
 
-    override fun callApis() {
 
-    }
 
 }

@@ -16,8 +16,10 @@ import com.example.groovyshopping.user.data.models.UserDataModel
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
 import com.homecookapp.user.utils.AppManger
 import com.example.groovyshopping.base.BaseViewModel
+import com.example.groovyshopping.data.Category
 import com.example.groovyshopping.user.data.reporsitory.MainRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -48,8 +50,15 @@ class AuthViewModel constructor(
         Resource.success(emptyList())  // أو Resource.error("Initial state") لكن دي مش مناسبة هنا
     )
 
+    private val _offerProducts = MutableStateFlow<Resource<List<Product>>>(Resource.unspecified())
+    val offerProducts = _offerProducts.asStateFlow()
+
+    private val _bestProducts = MutableStateFlow<Resource<List<Product>>>(Resource.unspecified())
+    val bestProducts = _bestProducts.asStateFlow()
+
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val category: Category = Category.Chair
 
 
     fun fetchProducts() {
@@ -71,6 +80,25 @@ class AuthViewModel constructor(
                 _specialProduct.value = Resource.error(e.message ?: "Unknown error")
                 _bestDealsProduct.value = Resource.error(e.message ?: "Unknown error")
                 _bestProduct.value = Resource.error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun fetchProductsByCategory(category: String) {
+        viewModelScope.launch {
+            _offerProducts.value = Resource.loading()
+            _bestProducts.value = Resource.loading()
+
+            try {
+                val snapshot = firestore.collection("Market")
+                    .whereEqualTo("category", category).get().await()
+
+                val products = snapshot.toObjects(Product::class.java)
+                Log.d("FirestoreData", "Fetched ${products.size} products for category $category")
+                _bestProducts.value = Resource.success(products)
+                _offerProducts.value = Resource.success(products)
+            } catch (e: Exception) {
+                _bestProducts.value = Resource.error(e.message ?: "Unknown error")
             }
         }
     }
