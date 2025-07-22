@@ -50,15 +50,24 @@ class AuthViewModel constructor(
         Resource.success(emptyList())  // أو Resource.error("Initial state") لكن دي مش مناسبة هنا
     )
 
+    private val _chairProducts = MutableStateFlow<Resource<List<Product>>>(
+        Resource.success(emptyList()) // أو Resource.loading() حسب ما تحب تبدأ بيها
+    )
+
     private val _offerProducts = MutableStateFlow<Resource<List<Product>>>(Resource.unspecified())
     val offerProducts = _offerProducts.asStateFlow()
 
     private val _bestProducts = MutableStateFlow<Resource<List<Product>>>(Resource.unspecified())
     val bestProducts = _bestProducts.asStateFlow()
 
+    val chairProducts = _chairProducts.asStateFlow()
+
+    private val _cupboardProducts = MutableStateFlow<Resource<List<Product>>>(Resource.loading())
+    val cupboardProducts = _cupboardProducts.asStateFlow()
+
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val category: Category = Category.Chair
+
 
 
     fun fetchProducts() {
@@ -84,21 +93,86 @@ class AuthViewModel constructor(
         }
     }
 
-    fun fetchProductsByCategory(category: String) {
+    fun fetchCupboardProducts() {
         viewModelScope.launch {
-            _offerProducts.value = Resource.loading()
-            _bestProducts.value = Resource.loading()
+            _cupboardProducts.value = Resource.loading()
 
             try {
-                val snapshot = firestore.collection("Market")
-                    .whereEqualTo("category", category).get().await()
-
+                val snapshot = firestore.collection("cupboard").get().await()
                 val products = snapshot.toObjects(Product::class.java)
-                Log.d("FirestoreData", "Fetched ${products.size} products for category $category")
+
+                Log.d("FirestoreChair", "Fetched ${products.size} chairs")
+
+                _cupboardProducts.value = Resource.success(products)
+            } catch (e: Exception) {
+                Log.e("FirestoreChair", "Error: ${e.message}")
+                _cupboardProducts.value = Resource.error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun fetchChairProducts() {
+        viewModelScope.launch {
+            _chairProducts.value = Resource.loading()
+
+            try {
+                val snapshot = firestore.collection("Market").get().await()
+                val products = snapshot.toObjects(Product::class.java)
+
+                Log.d("FirestoreChair", "Fetched ${products.size} chairs")
+
+                _chairProducts.value = Resource.success(products)
+            } catch (e: Exception) {
+                Log.e("FirestoreChair", "Error: ${e.message}")
+                _chairProducts.value = Resource.error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun fetchTable() {
+        viewModelScope.launch {
+            _bestProducts.value = Resource.loading()
+            _offerProducts.value = Resource.loading()
+            try {
+                val snapshot = firestore.collection("table").get().await()
+                val products = snapshot.toObjects(Product::class.java)
                 _bestProducts.value = Resource.success(products)
                 _offerProducts.value = Resource.success(products)
             } catch (e: Exception) {
                 _bestProducts.value = Resource.error(e.message ?: "Unknown error")
+                _offerProducts.value = Resource.error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun fetchFurniture() {
+        viewModelScope.launch {
+            _bestProducts.value = Resource.loading()
+            _offerProducts.value = Resource.loading()
+            try {
+                val snapshot = firestore.collection("furniture").get().await()
+                val products = snapshot.toObjects(Product::class.java)
+                _bestProducts.value = Resource.success(products)
+                _offerProducts.value = Resource.success(products)
+            } catch (e: Exception) {
+                _bestProducts.value = Resource.error(e.message ?: "Unknown error")
+                _offerProducts.value = Resource.error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun fetchAccessory() {
+        viewModelScope.launch {
+            _bestProducts.value = Resource.loading()
+            _offerProducts.value = Resource.loading()
+            try {
+                val snapshot = firestore.collection("accessory").get().await()
+                val products = snapshot.toObjects(Product::class.java)
+                _bestProducts.value = Resource.success(products)
+                _offerProducts.value = Resource.success(products)
+            } catch (e: Exception) {
+                _bestProducts.value = Resource.error(e.message ?: "Unknown error")
+                _offerProducts.value = Resource.error(e.message ?: "Unknown error")
             }
         }
     }
