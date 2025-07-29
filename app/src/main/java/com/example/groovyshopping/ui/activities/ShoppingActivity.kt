@@ -7,7 +7,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.groovyshopping.R
 import com.example.groovyshopping.base.BaseActivity
 import com.example.groovyshopping.databinding.ActivityShoppingBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import kotlin.reflect.KClass
 
 class ShoppingActivity : BaseActivity<ActivityShoppingBinding, AuthViewModel>() {

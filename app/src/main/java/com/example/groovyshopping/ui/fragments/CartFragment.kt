@@ -3,7 +3,7 @@ package com.example.groovyshopping.ui.fragments
 import android.os.Bundle
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentCartBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.user.base.BaseFragment
 import kotlin.reflect.KClass
 

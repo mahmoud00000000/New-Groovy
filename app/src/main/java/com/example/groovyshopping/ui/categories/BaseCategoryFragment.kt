@@ -8,7 +8,7 @@ package com.example.groovyshopping.ui.categories
 //import androidx.recyclerview.widget.LinearLayoutManager
 //import com.example.groovyshopping.R
 //import com.example.groovyshopping.databinding.FragmentBaseCategoryBinding
-//import com.example.groovyshopping.ui.AuthViewModel
+//import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 //import com.example.groovyshopping.ui.adapter.BestProductsAdapter
 //import com.example.groovyshopping.user.base.BaseFragment
 //import com.example.groovyshopping.user.data.remote.networkHandling.Resource

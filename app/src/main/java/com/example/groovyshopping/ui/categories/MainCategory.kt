@@ -5,20 +5,22 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentMainCategoryBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.ui.adapter.BestDealsAdapter
 import com.example.groovyshopping.ui.adapter.BestProductsAdapter
 import com.example.groovyshopping.ui.adapter.SpecialProductsAdapter
+import com.example.groovyshopping.ui.viewmodels.ProductViewModel
 import com.example.groovyshopping.user.base.BaseFragment
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.reflect.KClass
 
-class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
+class MainCategory : BaseFragment<FragmentMainCategoryBinding, ProductViewModel>(){
     private lateinit var specialProductsAdapter: SpecialProductsAdapter
     private lateinit var bestDealsProductsAdapter: BestDealsAdapter
     private lateinit var bestProductsAdapter: BestProductsAdapter
@@ -26,7 +28,7 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
 
 
 
-    override fun viewModelClass(): KClass<AuthViewModel> = AuthViewModel::class
+    override fun viewModelClass(): KClass<ProductViewModel> = ProductViewModel::class
 
 
 
@@ -36,73 +38,30 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
 
     override fun observer() {
         setupSpecialProductsRv()
-        lifecycleScope.launchWhenStarted {
-            viewModel._specialProduct.collectLatest {
-                when (it.status) {
-                    Resource.Status.LOADING -> {
-                        showLoading()
-                    }
-                    Resource.Status.SUCCESS -> {
-                        specialProductsAdapter.differ.submitList(it.data)
-                        hideLoading()
-                        Log.d("CheckData", "List size: ${it.data?.size}")
-                        it.data?.forEachIndexed { index, product ->
-                            Log.d("CheckData", "Item $index => ${product.name} | ${product.images}")
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        hideLoading()
-                        Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
-                    }
-                    Resource.Status.UNSPECIFIED -> {
-                        hideLoading()
-                        Log.w("Status", "UNSPECIFIED")
-                    }
-                }
-            }
+        specialProductsAdapter.onClick = {
+            val b = Bundle().apply { putParcelable("product", it) }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
         }
 
         setupBestDealsProductsRv()
-        lifecycleScope.launchWhenStarted {
-            viewModel._bestDealsProduct.collectLatest {
-                when (it.status) {
-                    Resource.Status.LOADING -> {
-                        showLoading()
-                    }
-                    Resource.Status.SUCCESS -> {
-                        bestDealsProductsAdapter.differ.submitList(it.data)
-                        hideLoading()
-                        Log.d("CheckData", "List size: ${it.data?.size}")
-                        it.data?.forEachIndexed { index, product ->
-                            Log.d("CheckData", "Item $index => ${product.name} | ${product.images}")
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        hideLoading()
-                        Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
-                    }
-                    Resource.Status.UNSPECIFIED -> {
-                        hideLoading()
-                        Log.w("Status", "UNSPECIFIED")
-                    }
-                }
-            }
+        bestDealsProductsAdapter.onClick = {
+            val b = Bundle().apply { putParcelable("product", it) }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
         }
 
         setupBestProductsRv()
+        bestProductsAdapter.onClick = {
+            val b = Bundle().apply { putParcelable("product", it) }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+        }
+
         lifecycleScope.launchWhenStarted {
-            viewModel._bestProduct.collectLatest {
+            viewModel._specialProduct.collectLatest {
                 when (it.status) {
-                    Resource.Status.LOADING -> {
-                        showLoading()
-                    }
+                    Resource.Status.LOADING -> showLoading()
                     Resource.Status.SUCCESS -> {
-                        bestProductsAdapter.differ.submitList(it.data)
+                        specialProductsAdapter.differ.submitList(it.data)
                         hideLoading()
-                        Log.d("CheckData", "List size: ${it.data?.size}")
-                        it.data?.forEachIndexed { index, product ->
-                            Log.d("CheckData", "Item $index => ${product.name} | ${product.images}")
-                        }
                     }
                     Resource.Status.ERROR -> {
                         hideLoading()
@@ -116,6 +75,45 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, AuthViewModel>(){
             }
         }
 
+        lifecycleScope.launchWhenStarted {
+            viewModel._bestDealsProduct.collectLatest {
+                when (it.status) {
+                    Resource.Status.LOADING -> showLoading()
+                    Resource.Status.SUCCESS -> {
+                        bestDealsProductsAdapter.differ.submitList(it.data)
+                        hideLoading()
+                    }
+                    Resource.Status.ERROR -> {
+                        hideLoading()
+                        Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
+                    }
+                    Resource.Status.UNSPECIFIED -> {
+                        hideLoading()
+                        Log.w("Status", "UNSPECIFIED")
+                    }
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel._bestProduct.collectLatest {
+                when (it.status) {
+                    Resource.Status.LOADING -> showLoading()
+                    Resource.Status.SUCCESS -> {
+                        bestProductsAdapter.differ.submitList(it.data)
+                        hideLoading()
+                    }
+                    Resource.Status.ERROR -> {
+                        hideLoading()
+                        Toast.makeText(requireContext(), it.message ?: "حدث خطأ", Toast.LENGTH_SHORT).show()
+                    }
+                    Resource.Status.UNSPECIFIED -> {
+                        hideLoading()
+                        Log.w("Status", "UNSPECIFIED")
+                    }
+                }
+            }
+        }
     }
 
     private fun hideLoading() {

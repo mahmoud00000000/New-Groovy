@@ -4,8 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentProfileBinding
-import com.example.groovyshopping.ui.AuthViewModel
-import com.example.groovyshopping.ui.activities.LoginActivity
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.ui.activities.LoginRegisterActivity
 import com.example.groovyshopping.user.base.BaseFragment
 import kotlin.reflect.KClass

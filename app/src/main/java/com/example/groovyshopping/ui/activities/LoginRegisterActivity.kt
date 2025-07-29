@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import com.example.groovyshopping.R
 import com.example.groovyshopping.base.BaseActivity
 import com.example.groovyshopping.databinding.ActivityLoginRegisterBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import kotlin.reflect.KClass
 
 class LoginRegisterActivity : BaseActivity<ActivityLoginRegisterBinding, AuthViewModel>() {

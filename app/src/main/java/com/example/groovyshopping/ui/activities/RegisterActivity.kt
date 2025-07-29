@@ -9,7 +9,7 @@ import com.example.groovyshopping.base.BaseActivity
 import kotlin.reflect.KClass
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.ActivityRegisterBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 

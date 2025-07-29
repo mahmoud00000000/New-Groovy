@@ -8,21 +8,22 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentChairBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.ui.adapter.BestProductsAdapter
+import com.example.groovyshopping.ui.viewmodels.ProductViewModel
 import com.example.groovyshopping.user.base.BaseFragment
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.reflect.KClass
 
-class ChairFragment : BaseFragment<FragmentChairBinding, AuthViewModel>() {
+class ChairFragment : BaseFragment<FragmentChairBinding, ProductViewModel>() {
 
     private lateinit var offerAdapter: BestProductsAdapter
     private lateinit var bestProductsAdapter: BestProductsAdapter
 
     override fun layoutResource(): Int = R.layout.fragment_chair
 
-    override fun viewModelClass(): KClass<AuthViewModel> = AuthViewModel::class
+    override fun viewModelClass(): KClass<ProductViewModel> = ProductViewModel::class
 
     override fun setUI(savedInstanceState: Bundle?) {
         dataBinding.viewModel = viewModel

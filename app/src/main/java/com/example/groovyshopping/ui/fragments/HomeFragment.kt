@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentHomeBinding
-import com.example.groovyshopping.ui.AuthViewModel
+import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.ui.adapter.HomeViewPagerAdapter
 import com.example.groovyshopping.ui.categories.AccessoryFragment
 import com.example.groovyshopping.ui.categories.ChairFragment
