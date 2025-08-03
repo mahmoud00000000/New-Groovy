@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.groovyshopping.R
 import com.example.groovyshopping.data.Address
 import com.example.groovyshopping.data.CartProduct
+import com.example.groovyshopping.data.order.Order
+import com.example.groovyshopping.data.order.OrderStatus
 import com.example.groovyshopping.databinding.FragmentBillingBinding
 import com.example.groovyshopping.databinding.FragmentSearchBinding
 import com.example.groovyshopping.ui.adapter.AddressAdapter
@@ -96,6 +98,47 @@ class BillingFragment : BaseFragment<FragmentBillingBinding, BillingViewModel>()
             }
         }
 
+        lifecycleScope.launchWhenStarted {
+            viewModel.order.collectLatest {
+                when (it.status) {
+                    Resource.Status.LOADING -> {
+                        // إخفاء الزر واظهار لودينج
+                        dataBinding.buttonPlaceOrder.apply {
+                            isEnabled = false
+                            alpha = 0.5f
+                            text = "Placing Order..."
+                        }
+                    }
+
+                    Resource.Status.SUCCESS -> {
+                        dataBinding.buttonPlaceOrder.apply {
+                            isEnabled = true
+                            alpha = 1f
+                            text = "Place Order"
+                        }
+
+                        Snackbar.make(requireView(), "Order placed successfully!", Snackbar.LENGTH_SHORT).show()
+
+                        // ممكن تضيف هنا Navigation لو حابب تروح لصفحة الطلبات مثلاً
+
+                        findNavController().navigate(R.id.action_billingFragment_to_cartFragment)
+                    }
+
+                    Resource.Status.ERROR -> {
+                        dataBinding.buttonPlaceOrder.apply {
+                            isEnabled = true
+                            alpha = 1f
+                            text = "Place Order"
+                        }
+
+                        Toast.makeText(requireContext(), "Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                    else -> Unit
+                }
+            }
+        }
+
     }
 
     override fun clicks() {
@@ -110,7 +153,7 @@ class BillingFragment : BaseFragment<FragmentBillingBinding, BillingViewModel>()
                 Toast.makeText(requireContext(), "Please select an address", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-//            showOrderConfirmationDialog()
+            showOrderConfirmationDialog()
         }
 
         addressAdapter.onClick = {
@@ -126,23 +169,23 @@ class BillingFragment : BaseFragment<FragmentBillingBinding, BillingViewModel>()
         viewModel.getUserAddresses()
     }
 
-//    private fun showOrderConfirmationDialog() {
-//        val alertDialog = AlertDialog.Builder(requireContext()).apply {
-//            setTitle("Order items")
-//            setMessage("Do you want to order your cart items?")
-//            setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
-//            setPositiveButton("Yes") { dialog, _ ->
-//                val order = Order(
-//                    OrderStatus.Ordered.status,
-//                    totalPrice,
-//                    products,
-//                    selectedAddress!!
-//                )
-//                orderViewModel.placeOrder(order)
-//                dialog.dismiss()
-//            }
-//        }
-//        alertDialog.create()
-//        alertDialog.show()
-//    }
+    private fun showOrderConfirmationDialog() {
+        val alertDialog = AlertDialog.Builder(requireContext()).apply {
+            setTitle("Order items")
+            setMessage("Do you want to order your cart items?")
+            setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            setPositiveButton("Yes") { dialog, _ ->
+                val order = Order(
+                    OrderStatus.Ordered.status,
+                    totalPrice,
+                    products,
+                    selectedAddress!!
+                )
+                viewModel.placeOrder(order)
+                dialog.dismiss()
+            }
+        }
+        alertDialog.create()
+        alertDialog.show()
+    }
 }
