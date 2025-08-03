@@ -33,7 +33,6 @@ class ProductDetailsFragment : BaseFragment<FragmentProductDetailsBinding, Detai
     private val colorsAdapter by lazy { ColorsAdapter() }
     private val sizeAdapter by lazy { SizesAdapter() }
 
-    private val args by navArgs<ProductDetailsFragmentArgs>()
 
     private var selectedColor: Int? = null
     private var selectedSize: String? = null
