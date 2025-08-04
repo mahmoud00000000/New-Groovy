@@ -51,6 +51,9 @@
         <argument
             android:name="product"
             app:argType="com.example.groovyshopping.data.Product" />
+        <argument
+            android:name="order"
+            app:argType="com.example.groovyshopping.data.Order" />
     </fragment>
     <fragment
         android:id="@+id/addressFragment"
@@ -84,5 +87,52 @@
         <argument
             android:name="payment"
             app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/accessoryFragment"
+        android:name="com.example.groovyshopping.ui.categories.AccessoryFragment"
+        android:label="AccessoryFragment"
+        tools:layout="@layout/fragment_accessory">
+        <action
+            android:id="@+id/action_accessoryFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chairFragment"
+        android:name="com.example.groovyshopping.ui.categories.ChairFragment"
+        android:label="ChairFragment"
+        tools:layout="@layout/fragment_chair">
+        <action
+            android:id="@+id/action_chairFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cupboardFragment"
+        android:name="com.example.groovyshopping.ui.categories.CupboardFragment"
+        android:label="CupboardFragment"
+        tools:layout="@layout/fragment_cupboard">
+        <action
+            android:id="@+id/action_cupboardFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/tableFragment"
+        android:name="com.example.groovyshopping.ui.categories.TableFragment"
+        android:label="TableFragment"
+        tools:layout="@layout/fragment_table">
+        <action
+            android:id="@+id/action_tableFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.example.groovyshopping.ui.fragments.OrdersFragment"
+        android:label="OrdersFragment"
+        tools:layout="@layout/fragment_orders">
+
+        <!-- مثال لو فيه action من OrdersFragment -->
+        <action
+            android:id="@+id/action_ordersFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
     </fragment>
 </navigation>

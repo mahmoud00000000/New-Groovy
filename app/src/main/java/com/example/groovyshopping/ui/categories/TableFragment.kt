@@ -3,6 +3,7 @@ package com.example.groovyshopping.ui.categories
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.groovyshopping.R
@@ -27,11 +28,12 @@ class TableFragment : BaseFragment<FragmentTableBinding, ProductViewModel>(){
 
     override fun setUI(savedInstanceState: Bundle?) {
         dataBinding.viewModel = viewModel
+        setupBestProductsRv()
+        setupOfferRv()
     }
 
     override fun observer() {
-        setupBestProductsRv()
-        setupOfferRv()
+
 
         lifecycleScope.launchWhenStarted {
             viewModel.bestProducts.collect { resource ->
@@ -64,11 +66,26 @@ class TableFragment : BaseFragment<FragmentTableBinding, ProductViewModel>(){
                 }
             }
         }
+
+
+
+
     }
 
     override fun clicks() {
 
-    }
+//        bestProductsAdapter.onClick = {
+//            val b = Bundle().apply { putParcelable("product", it) }
+//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+//        }
+//
+//        offerAdapter.onClick = {
+//            val b = Bundle().apply { putParcelable("product", it) }
+//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+//        }
+
+
+        }
 
     override fun callApis() {
 

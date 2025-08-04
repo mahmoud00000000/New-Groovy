@@ -17,6 +17,7 @@
     <color name="g_red">#FF0000</color>
     <color name="g_gray500">#969899</color>
     <color name="g_orange_yellow">#F8BA00</color>
+    <color name="g_green">#11ff00</color>
 
     <color name="textDarkGrayLight">#FF888888</color>
     <color name="black_white">#FF000000</color>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.groovyshopping.R
@@ -55,7 +56,18 @@ class CupboardFragment : BaseFragment<FragmentCupboardBinding, ProductViewModel>
         }
     }
 
-    override fun clicks() {}
+    override fun clicks() {
+
+//        bestProductsAdapter.onClick = {
+//            val b = Bundle().apply { putParcelable("product", it) }
+//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+//        }
+//
+//        offerAdapter.onClick = {
+//            val b = Bundle().apply { putParcelable("product", it) }
+//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+//        }
+    }
 
     override fun callApis() {
         viewModel.fetchCupboardProducts()
