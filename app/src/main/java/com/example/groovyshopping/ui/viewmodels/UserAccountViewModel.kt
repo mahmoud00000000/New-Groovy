@@ -49,7 +49,7 @@ class UserAccountViewModel(
             _user.emit(Resource.loading())
         }
 
-        firestore.collection("user").document(auth.uid!!).get()
+        firestore.collection("users").document(auth.uid!!).get()
             .addOnSuccessListener {
                 val user = it.toObject(User::class.java)
                 user?.let {
@@ -108,7 +108,7 @@ class UserAccountViewModel(
 
     private fun saveUserInformation(user: User, shouldRetrievedOldImage: Boolean) {
         firestore.runTransaction { transaction ->
-            val documentRef = firestore.collection("user").document(auth.uid!!)
+            val documentRef = firestore.collection("users").document(auth.uid!!)
             if (shouldRetrievedOldImage) {
                 val currentUser = transaction.get(documentRef).toObject(User::class.java)
                 val newUser = user.copy(imagePath = currentUser?.imagePath ?: "")

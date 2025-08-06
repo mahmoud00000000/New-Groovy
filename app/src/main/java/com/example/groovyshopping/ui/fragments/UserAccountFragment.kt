@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import android.graphics.Color
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -69,12 +70,14 @@ class UserAccountFragment : BaseFragment<FragmentUserAccountBinding, UserAccount
     override fun observer() {
         lifecycleScope.launchWhenStarted {
             viewModel.user.collectLatest {
+                Log.d("UserAccountFragment", "User Resource: $it")
                 when (it.status) {
                     Resource.Status.LOADING -> showUserLoading()
 
                     Resource.Status.SUCCESS -> {
                         hideUserLoading()
                         it.data?.let { user ->
+                            Log.d("UserAccountFragment", "User Data: $user")
                             showUserInformation(user)
                         }
                     }
@@ -120,6 +123,7 @@ class UserAccountFragment : BaseFragment<FragmentUserAccountBinding, UserAccount
     }
 
     override fun callApis() {
+        Log.d("UserAccountFragment", "callApis called")
         viewModel.getUser()
     }
 

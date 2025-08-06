@@ -34,7 +34,7 @@ class DetailsViewModel  constructor(
             _addToCart.emit(Resource.loading())
         }
 
-        firestore.collection("user").document(userId).collection("cart")
+        firestore.collection("users").document(userId).collection("cart")
             .whereEqualTo("product.id", cartProduct.product.id)
             .get()
             .addOnSuccessListener { documents ->

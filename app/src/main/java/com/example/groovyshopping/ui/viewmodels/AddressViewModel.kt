@@ -33,7 +33,7 @@ class AddressViewModel(
         if (validateInputs) {
             viewModelScope.launch { _addNewAddress.emit(Resource.loading()) }
 
-            firestore.collection("user").document(auth.uid!!).collection("address").document()
+            firestore.collection("users").document(auth.uid!!).collection("address").document()
                 .set(address)
                 .addOnSuccessListener {
                     viewModelScope.launch { _addNewAddress.emit(Resource.success(address)) }

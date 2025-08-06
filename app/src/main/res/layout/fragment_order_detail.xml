@@ -67,59 +67,33 @@
             android:id="@+id/linearStepView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="16dp"
+            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="@id/guideline2"
             app:layout_constraintStart_toStartOf="@id/guideline1"
             app:layout_constraintTop_toBottomOf="@id/toolbarOrderDetails">
 
-            <!-- Step 1 -->
-            <TextView
-                android:id="@+id/step1"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:text="1"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/bg_step_done"/>
-
-            <!-- Line 1 -->
-            <View
-                android:layout_width="40dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center"
-                android:background="@color/g_gray700"/>
-
-            <!-- Step 2 -->
-            <TextView
-                android:id="@+id/step2"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:text="2"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/bg_step_pending"/>
-
-            <!-- Line 2 -->
-            <View
-                android:layout_width="40dp"
-                android:layout_height="2dp"
-                android:layout_gravity="center"
-                android:background="@color/g_gray700"/>
-
-            <!-- Step 3 -->
-            <TextView
-                android:id="@+id/step3"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:gravity="center"
-                android:text="3"
-                android:textSize="14sp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/bg_step_pending"/>
+            <com.shuhart.stepview.StepView
+                android:id="@+id/stepView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:sv_selectedCircleColor="@color/g_orange_yellow"
+                app:sv_selectedTextColor="@color/g_gray700"
+                app:sv_stepLineWidth="3dp"
+                app:sv_stepPadding="4dp"
+                app:sv_nextTextColor="@color/g_gray700"
+                app:sv_nextStepLineColor="@color/g_gray700"
+                app:sv_doneCircleColor="@color/g_orange_yellow"
+                app:sv_doneStepLineColor="@color/g_orange_yellow"
+                app:sv_doneCircleRadius="14dp"
+                app:sv_selectedCircleRadius="14dp"
+                app:sv_selectedStepNumberColor="@color/g_blue_gray200"
+                app:sv_stepViewStyle="@style/StepView"
+                app:sv_doneStepMarkColor="@color/g_blue_gray200"
+                app:sv_stepNumberTextSize="12sp"
+                app:sv_animationType="Line"
+                app:sv_doneTextColor="@color/g_gray700"
+                />
         </LinearLayout>
 
 

@@ -50,7 +50,7 @@ class CartViewModel(
     private fun getCartProducts() {
         viewModelScope.launch { _cartProducts.emit(Resource.loading()) }
 
-        firestore.collection("user").document(auth.uid ?: "").collection("cart")
+        firestore.collection("users").document(auth.uid ?: "").collection("cart")
             .addSnapshotListener { value, error ->
                 if (error != null || value == null) {
                     viewModelScope.launch {

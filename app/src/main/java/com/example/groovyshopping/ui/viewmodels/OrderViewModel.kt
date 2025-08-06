@@ -32,14 +32,14 @@ class OrderViewModel(
             _order.emit(Resource.loading())
 
             try {
-                val cartItems = firestore.collection("user")
+                val cartItems = firestore.collection("users")
                     .document(auth.uid!!)
                     .collection("cart")
                     .get()
                     .await()
 
                 firestore.runBatch { batch ->
-                    val userOrderRef = firestore.collection("user")
+                    val userOrderRef = firestore.collection("users")
                         .document(auth.uid!!)
                         .collection("orders")
                         .document()
@@ -75,7 +75,7 @@ class OrderViewModel(
             _allOrders.emit(Resource.loading())
 
             try {
-                firestore.collection("user")
+                firestore.collection("users")
                     .document(auth.uid!!)
                     .collection("orders")
                     .addSnapshotListener { value, error ->

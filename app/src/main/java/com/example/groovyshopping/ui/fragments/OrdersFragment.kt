@@ -60,11 +60,11 @@ class OrdersFragment : BaseFragment<FragmentOrdersBinding, OrderViewModel>() {
             }
         }
 
-//        ordersAdapter.onClick = {
-//            val action =
-//                OrdersFragmentDirections.actionOrdersFragmentToOrderDetailFragment(it)
-//            findNavController().navigate(action)
-//        }
+        ordersAdapter.onClick = {
+            val action =
+                OrdersFragmentDirections.actionOrdersFragmentToOrderDetailFragment(it)
+            findNavController().navigate(action)
+        }
     }
 
     override fun clicks() {
@@ -72,6 +72,7 @@ class OrdersFragment : BaseFragment<FragmentOrdersBinding, OrderViewModel>() {
     }
 
     override fun callApis() {
+        viewModel.getAllOrders()
         // لو بتحب تبدأ بجلب الداتا هنا بدل viewModel.init جوه الـ ViewModel
     }
 

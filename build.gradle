@@ -5,20 +5,18 @@ buildscript {
         mavenCentral()
         //noinspection JcenterRepositoryObsolete
         jcenter()
-
+        maven { url 'https://jitpack.io' } // ✅ أضفنا الريبو الخاص بـ jitpack
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:8.7.0'
         classpath 'com.google.gms:google-services:4.4.2'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.3'
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7"
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.48"
-
     }
 }
-
 
 task clean(type: Delete) {
     delete rootProject.buildDir
