@@ -125,11 +125,16 @@
                         style="@style/h3"
                         android:textColor="@color/black"
                         android:text="Color"/>
-                    
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvColors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:orientation="horizontal"
+                        android:overScrollMode="never"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        />
 
                 </LinearLayout>
 
@@ -149,8 +154,13 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:orientation="horizontal"
+                        android:overScrollMode="never"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        />
 
                 </LinearLayout>
 

@@ -33,7 +33,7 @@ class BillingViewModel(
 
     fun getUserAddresses() {
         viewModelScope.launch { _address.emit(Resource.loading()) }
-        firestore.collection("users").document(auth.uid!!).collection("address")
+        firestore.collection("user").document(auth.uid!!).collection("address")
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     viewModelScope.launch {

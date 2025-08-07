@@ -52,19 +52,35 @@ class ProductViewModel constructor(
 
     fun fetchProducts() {
         viewModelScope.launch {
-            _specialProduct.value = Resource.loading() // ممكن تكتب null أو تسيبها فاضية
+            _specialProduct.value = Resource.loading()
             _bestDealsProduct.value = Resource.loading()
             _bestProduct.value = Resource.loading()
 
             try {
                 val snapshot = firestore.collection("products").get().await()
-                val products = snapshot.toObjects(Product::class.java)
+                val products = snapshot.documents.map { document ->
+                    val colorList = document.get("color") as? List<Long> ?: emptyList()
+                    val sizeList = document.get("size") as? List<String> ?: emptyList()
+
+                    Product(
+                        id = document.getString("id") ?: "",
+                        name = document.getString("name") ?: "",
+                        category = document.getString("category") ?: "",
+                        price = document.getDouble("price")?.toFloat() ?: 0f,
+                        offerPercentage = document.getDouble("offerPercentage")?.toFloat(),
+                        description = document.getString("description"),
+                        colors = colorList.map { it.toInt() },
+                        sizes = sizeList,
+                        images = document.get("images") as? List<String> ?: emptyList()
+                    )
+                }
 
                 Log.d("FirestoreTest", "Products: $products")
 
                 _specialProduct.value = Resource.success(products)
                 _bestDealsProduct.value = Resource.success(products)
                 _bestProduct.value = Resource.success(products)
+
             } catch (e: Exception) {
                 _specialProduct.value = Resource.error(e.message ?: "Unknown error")
                 _bestDealsProduct.value = Resource.error(e.message ?: "Unknown error")

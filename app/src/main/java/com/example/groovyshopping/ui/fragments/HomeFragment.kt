@@ -1,9 +1,12 @@
 package com.example.groovyshopping.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.groovyshopping.R
 import com.example.groovyshopping.databinding.FragmentHomeBinding
+import com.example.groovyshopping.ui.activities.LoginActivity
 import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.ui.adapter.HomeViewPagerAdapter
 import com.example.groovyshopping.ui.categories.AccessoryFragment
@@ -59,6 +62,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, AuthViewModel>(){
     }
 
     override fun clicks() {
+
+        dataBinding.screenBar.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        }
 
     }
 

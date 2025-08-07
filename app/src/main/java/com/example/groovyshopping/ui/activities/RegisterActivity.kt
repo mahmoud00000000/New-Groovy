@@ -8,9 +8,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.groovyshopping.base.BaseActivity
 import kotlin.reflect.KClass
 import com.example.groovyshopping.R
+import com.example.groovyshopping.data.User
 import com.example.groovyshopping.databinding.ActivityRegisterBinding
 import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding, AuthViewModel>() {
@@ -29,6 +31,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, AuthViewModel>() 
     }
 
     override fun observer() {
+
 
 
     }
@@ -64,17 +67,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, AuthViewModel>() 
 
     }
 
-     fun addUser(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful)
-                    verifyEmail()
-                else
-                    Toast.makeText(this, task.exception?.localizedMessage, Toast.LENGTH_SHORT).show()
 
-
-            }
-    }
 
      fun verifyEmail() {
         val user = auth.currentUser
@@ -83,6 +76,40 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding, AuthViewModel>() 
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Check your email", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    fun addUser(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val firebaseUser = auth.currentUser
+                    val uid = firebaseUser?.uid ?: return@addOnCompleteListener
+
+                    val firstName = dataBinding.edFirstNameRegister.text.toString()
+                    val lastName = dataBinding.edLastNameRegister.text.toString()
+
+                    val user = User(
+                        uid = uid,
+                        firstName = firstName,
+                        lastName = lastName,
+                        email = email
+                    )
+
+                    FirebaseFirestore.getInstance()
+                        .collection("user")
+                        .document(uid)
+                        .set(user)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "User Registered Successfully", Toast.LENGTH_SHORT).show()
+                            verifyEmail()
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to save user: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                } else {
+                    Toast.makeText(this, task.exception?.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
             }
     }

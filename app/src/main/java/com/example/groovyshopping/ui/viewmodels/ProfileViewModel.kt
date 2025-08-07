@@ -38,7 +38,7 @@ class ProfileViewModel(
             _user.emit(Resource.loading())
         }
 
-        firestore.collection("users").document(auth.uid!!).get()
+        firestore.collection("user").document(auth.uid!!).get()
             .addOnSuccessListener {
                 Log.d("UserAccountViewModel", "DocumentSnapshot: ${it.exists()}")
                 if (it.exists()) {

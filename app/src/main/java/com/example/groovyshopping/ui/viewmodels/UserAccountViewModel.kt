@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.groovyshopping.base.BaseViewModel
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
@@ -49,8 +50,9 @@ class UserAccountViewModel(
             _user.emit(Resource.loading())
         }
 
-        firestore.collection("users").document(auth.uid!!).get()
+        firestore.collection("user").document(auth.uid!!).get()
             .addOnSuccessListener {
+                Log.d("getUser", "Document: ${it.exists()} - Data: ${it.data}")
                 val user = it.toObject(User::class.java)
                 user?.let {
                     viewModelScope.launch {
@@ -108,14 +110,19 @@ class UserAccountViewModel(
 
     private fun saveUserInformation(user: User, shouldRetrievedOldImage: Boolean) {
         firestore.runTransaction { transaction ->
-            val documentRef = firestore.collection("users").document(auth.uid!!)
-            if (shouldRetrievedOldImage) {
-                val currentUser = transaction.get(documentRef).toObject(User::class.java)
-                val newUser = user.copy(imagePath = currentUser?.imagePath ?: "")
-                transaction.set(documentRef, newUser)
+            val documentRef = firestore.collection("user").document(auth.uid!!)
+            val snapshot = transaction.get(documentRef)
+            val currentUser = if (snapshot.exists()) {
+                snapshot.toObject(User::class.java)
             } else {
-                transaction.set(documentRef, user)
+                null
             }
+            val newUser = if (shouldRetrievedOldImage) {
+                user.copy(imagePath = currentUser?.imagePath ?: "")
+            } else {
+                user
+            }
+            transaction.set(documentRef, newUser)
         }.addOnSuccessListener {
             viewModelScope.launch {
                 _updateInfo.emit(Resource.success(user))

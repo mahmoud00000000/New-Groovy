@@ -13,6 +13,7 @@ import com.example.groovyshopping.ui.viewmodels.DetailsViewModel
 import com.example.groovyshopping.ui.viewmodels.OrderViewModel
 import com.example.groovyshopping.ui.viewmodels.ProductViewModel
 import com.example.groovyshopping.ui.viewmodels.ProfileViewModel
+import com.example.groovyshopping.ui.viewmodels.SearchViewModel
 import com.example.groovyshopping.ui.viewmodels.UserAccountViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,6 +34,7 @@ val viewModelModule = module {
     viewModel { UserAccountViewModel(get(),get(),get(),get(),get(),get()) }
     viewModel { OrderViewModel(get(),get(),get(),get()) }
     viewModel { ProfileViewModel(get(),get(),get(),get()) }
+    viewModel { SearchViewModel(get(),get(),get()) }
     //viewModel { SearchViewModel(get(),get()) }
     //viewModel { HomeViewModel(get(),get()) }
     //viewModel { AddressViewModel(get(),get()) }

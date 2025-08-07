@@ -41,6 +41,7 @@ class ProductDetailsFragment : BaseFragment<FragmentProductDetailsBinding, Detai
     override fun setUI(savedInstanceState: Bundle?) {
         currentProduct = arguments?.getParcelable("product")
 
+
         currentProduct?.let { product ->
             dataBinding.tvProductName.text = product.name
             dataBinding.tvProductPrice.text = "${product.price} EGP"
@@ -62,7 +63,12 @@ class ProductDetailsFragment : BaseFragment<FragmentProductDetailsBinding, Detai
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             sizeAdapter.differ.submitList(product.sizes)
         }
+        Log.d("ProductDetailsFragment", "products colors: ${currentProduct?.colors}")
+        Log.d("ProductDetailsFragment", "products sizes: ${currentProduct?.sizes}")
+
     }
+
+
 
     override fun observer() {
         lifecycleScope.launchWhenStarted {

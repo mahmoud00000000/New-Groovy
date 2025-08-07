@@ -1,6 +1,7 @@
 package com.example.groovyshopping.data
 
 data class User(
+    val uid: String = "",
     val firstName: String,
     val lastName: String,
     val email: String,
