@@ -7,6 +7,7 @@ import com.example.groovyshopping.data.order.Order
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
 import com.example.groovyshopping.user.data.reporsitory.MainRepository
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.homecookapp.user.utils.AppManger
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,47 +53,54 @@ class BillingViewModel(
     fun placeOrder(order: Order) {
         viewModelScope.launch {
             _order.emit(Resource.loading())
-
             try {
-                // ❶ الحصول على المنتجات الموجودة في الكارت
                 val cartItems = firestore.collection("user")
                     .document(auth.uid!!)
                     .collection("cart")
                     .get()
                     .await()
 
-                // ❷ تنفيذ Batch بعد الحصول على الكارت
+                val orderId = System.currentTimeMillis()
+
+                // هنا بتعرف الـ orderMap
+                val orderMap = hashMapOf(
+                    "orderId" to orderId,
+                    "orderStatus" to order.orderStatus,
+                    "date" to FieldValue.serverTimestamp(), // Timestamp من السيرفر
+                    "userId" to auth.uid,
+                    "totalPrice" to order.totalPrice,
+                    "products" to order.products,
+                    "address" to order.address
+                )
+
+                // هنا بقى تقدر تستخدمه
                 firestore.runBatch { batch ->
                     val userOrderRef = firestore.collection("user")
                         .document(auth.uid!!)
                         .collection("orders")
-                        .document()
+                        .document(orderId.toString())
 
-                    val globalOrderRef = firestore.collection("orders").document()
+                    val globalOrderRef = firestore.collection("orders")
+                        .document(orderId.toString())
 
-                    // أضف الأوردر
-                    batch.set(userOrderRef, order)
-                    batch.set(globalOrderRef, order)
+                    batch.set(userOrderRef, orderMap)
+                    batch.set(globalOrderRef, orderMap)
 
-                    // امسح المنتجات من الكارت
                     cartItems.documents.forEach {
                         batch.delete(it.reference)
                     }
+                }.await()
 
-                }.addOnSuccessListener {
-                    viewModelScope.launch {
-                        _order.emit(Resource.success(order))
-                    }
-                }.addOnFailureListener {
-                    viewModelScope.launch {
-                        _order.emit(Resource.error(it.message.toString()))
-                    }
-                }
-
+                _order.emit(Resource.success(order))
             } catch (e: Exception) {
                 _order.emit(Resource.error(e.message.toString()))
             }
         }
+    }
+
+    fun getCurrentDate(): String {
+        val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault())
+        return sdf.format(java.util.Date())
     }
 
 }

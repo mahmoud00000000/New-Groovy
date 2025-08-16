@@ -96,14 +96,15 @@ class UserAccountViewModel(
                 val byteArrayOutputStream = ByteArrayOutputStream()
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 96, byteArrayOutputStream)
                 val imageByteArray = byteArrayOutputStream.toByteArray()
-                val imageDirectory = storage.child("profileImages/${auth.uid}/${UUID.randomUUID()}")
-                val result = imageDirectory.putBytes(imageByteArray).await()
-                val imageUrl = result.storage.downloadUrl.await().toString()
+
+                val imageDirectory = storage.child("profileImages/${auth.uid}.jpg")
+                imageDirectory.putBytes(imageByteArray).await()
+
+                val imageUrl = imageDirectory.downloadUrl.await().toString()
                 saveUserInformation(user.copy(imagePath = imageUrl), false)
+
             } catch (e: Exception) {
-                viewModelScope.launch {
-                    _user.emit(Resource.error(e.message.toString()))
-                }
+                _user.emit(Resource.error(e.message.toString()))
             }
         }
     }
@@ -114,9 +115,8 @@ class UserAccountViewModel(
             val snapshot = transaction.get(documentRef)
             val currentUser = if (snapshot.exists()) {
                 snapshot.toObject(User::class.java)
-            } else {
-                null
-            }
+            } else null
+
             val newUser = if (shouldRetrievedOldImage) {
                 user.copy(imagePath = currentUser?.imagePath ?: "")
             } else {
@@ -124,6 +124,7 @@ class UserAccountViewModel(
             }
             transaction.set(documentRef, newUser)
         }.addOnSuccessListener {
+            getUser() // ← هنا أهم تعديل
             viewModelScope.launch {
                 _updateInfo.emit(Resource.success(user))
             }

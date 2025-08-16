@@ -18,6 +18,10 @@
             app:destination="@id/searchFragment" />
     </fragment>
 
+    <action
+        android:id="@+id/action_global_productDetailsFragment"
+        app:destination="@id/productDetailsFragment" />
+
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.groovyshopping.ui.fragments.CartFragment"
@@ -73,12 +77,10 @@
         android:name="com.example.groovyshopping.ui.fragments.ProductDetailsFragment"
         android:label="ProductDetailsFragment"
         tools:layout="@layout/fragment_product_details">
+
         <argument
             android:name="product"
             app:argType="com.example.groovyshopping.data.Product" />
-        <argument
-            android:name="order"
-            app:argType="com.example.groovyshopping.data.order.Order" />
     </fragment>
 
     <fragment
@@ -169,13 +171,12 @@
     <fragment
         android:id="@+id/orderDetailFragment"
         android:name="com.example.groovyshopping.ui.fragments.OrderDetailFragment"
-        android:label="Order Detail"
+        android:label="OrderDetailFragment"
         tools:layout="@layout/fragment_order_detail">
 
         <argument
             android:name="order"
-            app:argType="com.example.groovyshopping.data.order.Order"
-            app:nullable="true" />
+            app:argType="com.example.groovyshopping.data.order.Order" />
     </fragment>
 
     <fragment

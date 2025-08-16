@@ -2,6 +2,7 @@ package com.example.groovyshopping.ui.categories
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -33,13 +34,27 @@ class ChairFragment : BaseFragment<FragmentChairBinding, ProductViewModel>() {
     }
 
     override fun observer() {
+
+        // عروض المنتجات
+        offerAdapter.onClick = {
+            val b = Bundle().apply { putParcelable("product", it) }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+        }
+
+        // أفضل المنتجات
+        bestProductsAdapter.onClick = {
+            val b = Bundle().apply { putParcelable("product", it) }
+            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
+        }
+
         lifecycleScope.launchWhenStarted {
             viewModel.chairProducts.collectLatest { result ->
                 when (result.status) {
                     Resource.Status.LOADING -> {
-                        Log.d("ProductState", "Loading chair products...")
+                        showLoading()
                     }
                     Resource.Status.SUCCESS -> {
+                        hideLoading()
                         val allProducts = result.data ?: emptyList()
                         val offers = allProducts.filter { (it.offerPercentage ?: 0f) > 0 }
                         val best = allProducts
@@ -48,7 +63,12 @@ class ChairFragment : BaseFragment<FragmentChairBinding, ProductViewModel>() {
                         bestProductsAdapter.differ.submitList(best)
                     }
                     Resource.Status.ERROR -> {
-                        Toast.makeText(requireContext(), result.message ?: "حصل خطأ", Toast.LENGTH_SHORT).show()
+                        hideLoading()
+                        Toast.makeText(
+                            requireContext(),
+                            result.message ?: "حصل خطأ",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     else -> Unit
                 }
@@ -57,17 +77,7 @@ class ChairFragment : BaseFragment<FragmentChairBinding, ProductViewModel>() {
     }
 
     override fun clicks() {
-
-//        bestProductsAdapter.onClick = {
-//            val b = Bundle().apply { putParcelable("product", it) }
-//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
-//        }
-//
-//        offerAdapter.onClick = {
-//            val b = Bundle().apply { putParcelable("product", it) }
-//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
-//        }
-
+        // أي أكشن إضافي لو محتاج
     }
 
     override fun callApis() {
@@ -77,7 +87,11 @@ class ChairFragment : BaseFragment<FragmentChairBinding, ProductViewModel>() {
     private fun setupOfferRv() {
         offerAdapter = BestProductsAdapter()
         dataBinding.rvOffer.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
             adapter = offerAdapter
         }
     }
@@ -88,5 +102,13 @@ class ChairFragment : BaseFragment<FragmentChairBinding, ProductViewModel>() {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = bestProductsAdapter
         }
+    }
+
+    private fun showLoading() {
+        dataBinding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        dataBinding.progressBar.visibility = View.GONE
     }
 }

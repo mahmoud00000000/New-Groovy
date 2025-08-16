@@ -8,26 +8,44 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.groovyshopping.R
 import com.example.groovyshopping.data.CartProduct
 import com.example.groovyshopping.databinding.CartProductItemBinding
 import com.example.groovyshopping.helper.getProductPrice
 
-class CartProductAdapter: RecyclerView.Adapter<CartProductAdapter.CartProductsViewHolder>() {
+class CartProductAdapter : RecyclerView.Adapter<CartProductAdapter.CartProductsViewHolder>() {
 
-    inner class CartProductsViewHolder( val binding: CartProductItemBinding) :
+    inner class CartProductsViewHolder(val binding: CartProductItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(cartProduct: CartProduct) {
             binding.apply {
-                Glide.with(itemView).load(cartProduct.product.images[0]).into(imageCartProduct)
+                // صورة المنتج (لو فاضية نعرض Placeholder)
+                val imageUrl = cartProduct.product.images.firstOrNull()
+                Glide.with(itemView)
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_placeholder) // حط أي placeholder موجود عندك
+                    .error(R.drawable.ic_placeholder)
+                    .into(imageCartProduct)
+
                 tvProductCartName.text = cartProduct.product.name
                 tvCartProductQuantity.text = cartProduct.quantity.toString()
 
-                val priceAfterPercentage = cartProduct.product.offerPercentage.getProductPrice(cartProduct.product.price)
+                // سعر المنتج بعد الخصم
+                val priceAfterPercentage = cartProduct.product.offerPercentage
+                    .getProductPrice(cartProduct.product.price)
                 tvProductCartPrice.text = "$ ${String.format("%.2f", priceAfterPercentage)}"
 
-                imageCartProductColor.setImageDrawable(ColorDrawable(cartProduct.selectedColor?: Color.TRANSPARENT))
-                tvCartProductSize.text = cartProduct.selectedSize?:"".also { imageCartProductSize.setImageDrawable(ColorDrawable(Color.TRANSPARENT)) }
+                // لون المنتج (لو مش موجود نخليه شفاف)
+                val color = cartProduct.selectedColor ?: Color.TRANSPARENT
+                imageCartProductColor.setImageDrawable(ColorDrawable(color))
+
+                // مقاس المنتج (لو مش موجود نخليه فاضي ونشيل الخلفية)
+                val size = cartProduct.selectedSize ?: ""
+                tvCartProductSize.text = size
+                if (size.isEmpty()) {
+                    imageCartProductSize.setImageDrawable(ColorDrawable(Color.TRANSPARENT))
+                }
             }
         }
     }
@@ -53,7 +71,7 @@ class CartProductAdapter: RecyclerView.Adapter<CartProductAdapter.CartProductsVi
     }
 
     override fun onBindViewHolder(holder: CartProductsViewHolder, position: Int) {
-        val cartProduct = differ.currentList[position]
+        val cartProduct = differ.currentList.getOrNull(position) ?: return
         holder.bind(cartProduct)
 
         holder.itemView.setOnClickListener {
@@ -69,14 +87,9 @@ class CartProductAdapter: RecyclerView.Adapter<CartProductAdapter.CartProductsVi
         }
     }
 
-    override fun getItemCount(): Int {
-        return differ.currentList.size
-    }
+    override fun getItemCount(): Int = differ.currentList.size
 
     var onProductClick: ((CartProduct) -> Unit)? = null
     var onPlusClick: ((CartProduct) -> Unit)? = null
     var onMinusClick: ((CartProduct) -> Unit)? = null
-
-
-
 }

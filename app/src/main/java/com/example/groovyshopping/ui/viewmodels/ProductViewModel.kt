@@ -45,6 +45,9 @@ class ProductViewModel constructor(
     private val _cupboardProducts = MutableStateFlow<Resource<List<Product>>>(Resource.loading())
     val cupboardProducts = _cupboardProducts.asStateFlow()
 
+    private val _tableProducts = MutableStateFlow<Resource<List<Product>>>(Resource.loading())
+    val tableProducts = _tableProducts.asStateFlow()
+
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -127,16 +130,13 @@ class ProductViewModel constructor(
 
     fun fetchTable() {
         viewModelScope.launch {
-            _bestProducts.value = Resource.loading()
-            _offerProducts.value = Resource.loading()
+            _tableProducts.value = Resource.loading()
             try {
                 val snapshot = firestore.collection("table").get().await()
                 val products = snapshot.toObjects(Product::class.java)
-                _bestProducts.value = Resource.success(products)
-                _offerProducts.value = Resource.success(products)
+                _tableProducts.value = Resource.success(products)
             } catch (e: Exception) {
-                _bestProducts.value = Resource.error(e.message ?: "Unknown error")
-                _offerProducts.value = Resource.error(e.message ?: "Unknown error")
+                _tableProducts.value = Resource.error(e.message ?: "Unknown error")
             }
         }
     }

@@ -14,6 +14,7 @@ import com.example.groovyshopping.ui.viewmodels.AuthViewModel
 import com.example.groovyshopping.ui.adapter.BestDealsAdapter
 import com.example.groovyshopping.ui.adapter.BestProductsAdapter
 import com.example.groovyshopping.ui.adapter.SpecialProductsAdapter
+import com.example.groovyshopping.ui.fragments.HomeFragmentDirections
 import com.example.groovyshopping.ui.viewmodels.ProductViewModel
 import com.example.groovyshopping.user.base.BaseFragment
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
@@ -37,6 +38,9 @@ class MainCategory : BaseFragment<FragmentMainCategoryBinding, ProductViewModel>
     }
 
     override fun observer() {
+
+
+
         setupSpecialProductsRv()
         specialProductsAdapter.onClick = {
             val b = Bundle().apply { putParcelable("product", it) }

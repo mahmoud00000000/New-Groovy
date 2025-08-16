@@ -1,8 +1,10 @@
 package com.example.groovyshopping.ui.categories
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,84 +15,79 @@ import com.example.groovyshopping.ui.adapter.BestProductsAdapter
 import com.example.groovyshopping.ui.viewmodels.ProductViewModel
 import com.example.groovyshopping.user.base.BaseFragment
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
+import kotlinx.coroutines.flow.collectLatest
 import kotlin.reflect.KClass
 
-class TableFragment : BaseFragment<FragmentTableBinding, ProductViewModel>(){
+class TableFragment : BaseFragment<FragmentTableBinding, ProductViewModel>() {
+
     private lateinit var offerAdapter: BestProductsAdapter
     private lateinit var bestProductsAdapter: BestProductsAdapter
+
     override fun layoutResource(): Int = R.layout.fragment_table
-
-
 
     override fun viewModelClass(): KClass<ProductViewModel> = ProductViewModel::class
 
-
-
     override fun setUI(savedInstanceState: Bundle?) {
         dataBinding.viewModel = viewModel
-        setupBestProductsRv()
         setupOfferRv()
+        setupBestProductsRv()
     }
 
     override fun observer() {
 
+        // عروض المنتجات
+        offerAdapter.onClick = { product ->
+            val bundle = Bundle().apply { putParcelable("product", product) }
+            findNavController().navigate(R.id.action_global_productDetailsFragment, bundle)
+        }
+
+        // أفضل المنتجات
+        bestProductsAdapter.onClick = { product ->
+            val bundle = Bundle().apply { putParcelable("product", product) }
+            findNavController().navigate(R.id.action_global_productDetailsFragment, bundle)
+        }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.bestProducts.collect { resource ->
-                when (resource.status) {
+            viewModel.tableProducts.collectLatest { result ->
+                when (result.status) {
+                    Resource.Status.LOADING -> showLoading()
                     Resource.Status.SUCCESS -> {
-                        resource.data?.let {
-                            bestProductsAdapter.differ.submitList(it)
-                        }
+                        hideLoading()
+                        val allProducts = result.data ?: emptyList()
+                        val offers = allProducts.filter { (it.offerPercentage ?: 0f) > 0 }
+                        val best = allProducts
+
+                        offerAdapter.differ.submitList(offers)
+                        bestProductsAdapter.differ.submitList(best)
                     }
                     Resource.Status.ERROR -> {
-                        Toast.makeText(requireContext(), resource.message ?: "Error", Toast.LENGTH_SHORT).show()
+                        hideLoading()
+                        Toast.makeText(requireContext(), result.message ?: "حصل خطأ", Toast.LENGTH_SHORT).show()
                     }
                     else -> Unit
                 }
             }
         }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.offerProducts.collect { resource ->
-                when (resource.status) {
-                    Resource.Status.SUCCESS -> {
-                        resource.data?.let {
-                            offerAdapter.differ.submitList(it)
-                        }
-                    }
-                    Resource.Status.ERROR -> {
-                        Toast.makeText(requireContext(), resource.message ?: "Error", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> Unit
-                }
-            }
-        }
-
-
-
-
     }
 
     override fun clicks() {
-
-//        bestProductsAdapter.onClick = {
-//            val b = Bundle().apply { putParcelable("product", it) }
-//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
-//        }
-//
-//        offerAdapter.onClick = {
-//            val b = Bundle().apply { putParcelable("product", it) }
-//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
-//        }
-
-
-        }
+        // أي أكشن إضافي لو محتاج
+    }
 
     override fun callApis() {
-
         viewModel.fetchTable()
+    }
 
+    private fun setupOfferRv() {
+        offerAdapter = BestProductsAdapter()
+        dataBinding.rvOffer.apply {
+            layoutManager = LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            adapter = offerAdapter
+        }
     }
 
     private fun setupBestProductsRv() {
@@ -101,12 +98,11 @@ class TableFragment : BaseFragment<FragmentTableBinding, ProductViewModel>(){
         }
     }
 
-    private fun setupOfferRv() {
-        offerAdapter = BestProductsAdapter()
-        dataBinding.rvOffer.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-            adapter = offerAdapter
-        }
+    private fun showLoading() {
+        dataBinding.progressBar.visibility = View.VISIBLE
     }
 
+    private fun hideLoading() {
+        dataBinding.progressBar.visibility = View.GONE
+    }
 }

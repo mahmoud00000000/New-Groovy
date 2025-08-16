@@ -59,6 +59,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, AuthViewModel>(){
 
     override fun observer() {
 
+
+
     }
 
     override fun clicks() {

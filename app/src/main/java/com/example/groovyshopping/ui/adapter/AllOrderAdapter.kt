@@ -12,13 +12,15 @@ import com.example.groovyshopping.data.order.OrderStatus
 import com.example.groovyshopping.data.order.getOrderStatus
 import com.example.groovyshopping.databinding.OrderItemBinding
 import com.example.groovyshopping.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AllOrdersAdapter : RecyclerView.Adapter<AllOrdersAdapter.OrdersViewHolder>() {
 
     inner class OrdersViewHolder(val binding: OrderItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(order: Order) {
             binding.tvOrderId.text = order.orderId.toString()
-            binding.tvOrderDate.text = order.date
+            binding.tvOrderDate.text = order.getFormattedDate()
 
             val colorDrawable = when (getOrderStatus(order.orderStatus)) {
                 is OrderStatus.Ordered -> ColorDrawable(binding.root.context.getColor(R.color.g_orange_yellow))

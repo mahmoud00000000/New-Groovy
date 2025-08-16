@@ -43,9 +43,15 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
         }
 
         dataBinding.linearTrackOrder.setOnClickListener {
-            val action = ProfileFragmentDirections
-                .actionProfileFragmentToOrderDetailFragment(null)
-            findNavController().navigate(action)
+            viewModel.getLastOrder { lastOrder ->
+                if (lastOrder != null) {
+                    val action = ProfileFragmentDirections
+                        .actionProfileFragmentToOrderDetailFragment(lastOrder)
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(context, "No orders found", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         dataBinding.linearBilling.setOnClickListener {
