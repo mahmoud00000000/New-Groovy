@@ -48,6 +48,9 @@ class ProductViewModel constructor(
     private val _tableProducts = MutableStateFlow<Resource<List<Product>>>(Resource.loading())
     val tableProducts = _tableProducts.asStateFlow()
 
+    private val _accessoryProducts = MutableStateFlow<Resource<List<Product>>>(Resource.unspecified())
+    val accessoryProducts = _accessoryProducts.asStateFlow()
+
 
     val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()

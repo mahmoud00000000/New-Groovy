@@ -115,6 +115,10 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
             )
             findNavController().navigate(action)
         }
+
+        dataBinding.imageCloseCart.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun callApis() {

@@ -163,6 +163,11 @@ class BillingFragment : BaseFragment<FragmentBillingBinding, BillingViewModel>()
                 findNavController().navigate(R.id.action_billingFragment_to_addressFragment, b)
             }
         }
+
+        dataBinding.imageCloseBilling.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
     }
 
     override fun callApis() {

@@ -90,6 +90,10 @@ class OrderDetailFragment : BaseFragment<FragmentOrderDetailBinding, OrderViewMo
 
     override fun clicks() {
 
+        dataBinding.imageCloseOrder.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
     }
 
     override fun callApis() {

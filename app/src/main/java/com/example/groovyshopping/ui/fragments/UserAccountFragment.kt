@@ -121,7 +121,9 @@ class UserAccountFragment : BaseFragment<FragmentUserAccountBinding, UserAccount
     }
 
     override fun clicks() {
-        // No additional clicks for now
+        dataBinding.imageCloseUserAccount.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun callApis() {

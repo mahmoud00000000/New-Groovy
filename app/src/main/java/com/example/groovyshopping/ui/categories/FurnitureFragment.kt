@@ -28,11 +28,14 @@ class FurnitureFragment : BaseFragment<FragmentFurnitureBinding, ProductViewMode
 
     override fun setUI(savedInstanceState: Bundle?) {
         dataBinding.viewModel = viewModel
+        setupOfferRv()
+        setupBestProductsRv()
     }
 
     override fun observer() {
         setupBestProductsRv()
         setupOfferRv()
+        clicks() // ← ضيفها هنا بعد ما الـ adapters يكونوا متجهزين
 
         lifecycleScope.launchWhenStarted {
             viewModel.bestProducts.collect { resource ->
@@ -69,15 +72,15 @@ class FurnitureFragment : BaseFragment<FragmentFurnitureBinding, ProductViewMode
 
     override fun clicks() {
 
-//        bestProductsAdapter.onClick = {
-//            val b = Bundle().apply { putParcelable("product", it) }
-//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
-//        }
-//
-//        offerAdapter.onClick = {
-//            val b = Bundle().apply { putParcelable("product", it) }
-//            findNavController().navigate(R.id.action_homeFragment_to_productDetailsFragment, b)
-//        }
+        offerAdapter.onClick = { product ->
+            val bundle = Bundle().apply { putParcelable("product", product) }
+            findNavController().navigate(R.id.action_global_productDetailsFragment, bundle)
+        }
+
+        bestProductsAdapter.onClick = { product ->
+            val bundle = Bundle().apply { putParcelable("product", product) }
+            findNavController().navigate(R.id.action_global_productDetailsFragment, bundle)
+        }
 
     }
 

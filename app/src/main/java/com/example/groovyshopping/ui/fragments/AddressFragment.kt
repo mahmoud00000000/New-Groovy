@@ -85,6 +85,10 @@ class AddressFragment : BaseFragment<FragmentAddressBinding, AddressViewModel>()
             val address = Address(addressTitle, fullName, street, phone, city, state)
             viewModel.addAddress(address)
         }
+
+        dataBinding.imageAddressClose.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun callApis() {

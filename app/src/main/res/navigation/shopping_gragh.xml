@@ -185,4 +185,14 @@
         android:label="UserAccountFragment"
         tools:layout="@layout/fragment_user_account" />
 
+    <fragment
+        android:id="@+id/furnitureFragment"
+        android:name="com.example.groovyshopping.ui.categories.FurnitureFragment"
+        android:label="FurnitureFragment"
+        tools:layout="@layout/fragment_furniture">
+        <action
+            android:id="@+id/action_furnitureFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
+
 </navigation>
