@@ -25,13 +25,14 @@ import kotlinx.coroutines.launch
 import com.example.groovyshopping.utils.validateEmail
 import com.example.groovyshopping.utils.RegisterValidation
 import com.example.groovyshopping.data.User
+import com.google.firebase.storage.FirebaseStorage
 
 class UserAccountViewModel(
     override var mainRepository: MainRepository,
     override val appManger: AppManger,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val storage: StorageReference,
+    private val storage: FirebaseStorage,
     private val contentResolver: ContentResolver
 ) : BaseViewModel(mainRepository, appManger) {
 
@@ -92,19 +93,15 @@ class UserAccountViewModel(
     private fun saveUserInformationWithNewImage(user: User, imageUri: Uri) {
         viewModelScope.launch {
             try {
-                val imageBitmap = MediaStore.Images.Media.getBitmap(contentResolver, imageUri)
-                val byteArrayOutputStream = ByteArrayOutputStream()
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 96, byteArrayOutputStream)
-                val imageByteArray = byteArrayOutputStream.toByteArray()
-
-                val imageDirectory = storage.child("profileImages/${auth.uid}.jpg")
-                imageDirectory.putBytes(imageByteArray).await()
+                val imageDirectory = storage.reference.child("profileImages/${auth.uid}.jpg")
+                // ارفع الـ Uri على طول بدل من تحويله لـ Bitmap
+                imageDirectory.putFile(imageUri).await()
 
                 val imageUrl = imageDirectory.downloadUrl.await().toString()
                 saveUserInformation(user.copy(imagePath = imageUrl), false)
 
             } catch (e: Exception) {
-                _user.emit(Resource.error(e.message.toString()))
+                _updateInfo.emit(Resource.error(e.message.toString()))
             }
         }
     }

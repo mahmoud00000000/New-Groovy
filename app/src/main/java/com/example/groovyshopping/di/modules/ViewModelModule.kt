@@ -44,7 +44,7 @@ val viewModelModule = module {
 
     single { FirebaseFirestore.getInstance() }
     single { FirebaseAuth.getInstance() }
-    single { FirebaseStorage.getInstance().reference } // ✅ أضف دي
+    single { FirebaseStorage.getInstance() } // ✅ أضف دي
     single { FirebaseCommon(get(), get()) }
 
     single<ContentResolver> { androidContext().contentResolver }

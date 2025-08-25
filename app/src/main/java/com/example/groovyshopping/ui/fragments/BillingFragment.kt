@@ -46,7 +46,12 @@ class BillingFragment : BaseFragment<FragmentBillingBinding, BillingViewModel>()
         dataBinding.viewModel = viewModel
 
         products = args.products.toList()
-        totalPrice = args.totalPrice
+        totalPrice = products.sumOf { cartProduct ->
+            (cartProduct.product.price * cartProduct.quantity).toDouble()
+        }.toFloat()
+
+        billingProductsAdapter.differ.submitList(products)
+        dataBinding.tvTotalPrice.text = "$ ${"%.2f".format(totalPrice)}"
 
         dataBinding.rvProducts.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)

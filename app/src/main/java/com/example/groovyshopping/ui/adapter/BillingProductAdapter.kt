@@ -26,7 +26,6 @@ class BillingProductsAdapter :
                 .load(cartProduct.product.images.firstOrNull())
                 .into(binding.imageCartProduct)
 
-            // عرض اللون والحجم
             binding.imageCartProductColor.setImageDrawable(
                 ColorDrawable(cartProduct.selectedColor ?: Color.TRANSPARENT)
             )

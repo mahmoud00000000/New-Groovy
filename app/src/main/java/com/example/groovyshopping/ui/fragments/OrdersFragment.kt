@@ -68,6 +68,10 @@ class OrdersFragment : BaseFragment<FragmentOrdersBinding, OrderViewModel>() {
     }
 
     override fun clicks() {
+
+        dataBinding.imageCloseOrders.setOnClickListener {
+            findNavController().navigateUp()
+        }
         // لو فيه حاجة ممكن تضاف هنا
     }
 
