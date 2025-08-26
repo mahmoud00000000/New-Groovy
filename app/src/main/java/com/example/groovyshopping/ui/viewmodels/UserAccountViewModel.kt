@@ -1,10 +1,12 @@
 package com.example.groovyshopping.ui.viewmodels
 
 import android.content.ContentResolver
+import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.viewModelScope
 import com.example.groovyshopping.base.BaseViewModel
 import com.example.groovyshopping.user.data.remote.networkHandling.Resource
@@ -67,7 +69,7 @@ class UserAccountViewModel(
             }
     }
 
-    fun updateUser(user: User, imageUri: Uri?) {
+    fun updateUser(user: User, imageUri: Uri?, context: Context) {
         val areInputsValid = validateEmail(user.email) is RegisterValidation.Success &&
                 user.firstName.trim().isNotEmpty() &&
                 user.lastName.trim().isNotEmpty()
@@ -83,14 +85,21 @@ class UserAccountViewModel(
             _updateInfo.emit(Resource.loading())
         }
 
-        if (imageUri == null) {
-            saveUserInformation(user, true)
+        if (imageUri != null) {
+            try {
+                val inputStream = context.contentResolver.openInputStream(imageUri)
+                inputStream?.close()
+
+                saveUserInformationWithNewImage(user, imageUri, context) // ✅ تعديل هنا
+            } catch (e: Exception) {
+                saveUserInformation(user, true)
+            }
         } else {
-            saveUserInformationWithNewImage(user, imageUri)
+            saveUserInformation(user, true)
         }
     }
 
-    private fun saveUserInformationWithNewImage(user: User, imageUri: Uri) {
+    private fun saveUserInformationWithNewImage(user: User, imageUri: Uri, context: Context) {
         viewModelScope.launch {
             try {
                 val imageDirectory = storage.reference.child("profileImages/${auth.uid}.jpg")

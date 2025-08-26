@@ -65,15 +65,15 @@ class UserAccountFragment : BaseFragment<FragmentUserAccountBinding, UserAccount
 
             if (uid.isNotEmpty()) {
                 val user = User(uid, firstName, lastName, email)
-                viewModel.updateUser(user, imageUri)
+                viewModel.updateUser(user, imageUri, requireContext())
             } else {
                 Toast.makeText(requireContext(), "User not authenticated", Toast.LENGTH_SHORT).show()
             }
         }
 
         dataBinding.tvUpdatePassword.setOnClickListener {
-            setupBottomSheetDialog {
-                // Handle password update if needed
+            setupBottomSheetDialog { password ->
+                viewModel.updatePassword(password)
             }
         }
     }

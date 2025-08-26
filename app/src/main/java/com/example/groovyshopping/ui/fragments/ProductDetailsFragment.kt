@@ -56,12 +56,14 @@ class ProductDetailsFragment : BaseFragment<FragmentProductDetailsBinding, Detai
             dataBinding.rvColors.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             colorsAdapter.differ.submitList(product.colors)
+            Log.d("ProductDetailsFragment", "products colors: ${currentProduct?.colors}")
 
             // إعداد RecyclerView للأحجام
             dataBinding.rvSize.adapter = sizeAdapter
             dataBinding.rvSize.layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             sizeAdapter.differ.submitList(product.sizes)
+            Log.d("ProductDetailsFragment", "products sizes: ${currentProduct?.sizes}")
         }
         Log.d("ProductDetailsFragment", "products colors: ${currentProduct?.colors}")
         Log.d("ProductDetailsFragment", "products sizes: ${currentProduct?.sizes}")
