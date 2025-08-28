@@ -27,6 +27,7 @@ import com.example.groovyshopping.user.data.remote.networkHandling.Resource
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.collectLatest
+import java.io.File
 import kotlin.reflect.KClass
 
 class UserAccountFragment : BaseFragment<FragmentUserAccountBinding, UserAccountViewModel>() {
@@ -132,11 +133,22 @@ class UserAccountFragment : BaseFragment<FragmentUserAccountBinding, UserAccount
 
     private fun showUserInformation(data: User) {
         dataBinding.apply {
-            Glide.with(requireContext())
-                .load(data.imagePath)
-                .placeholder(ColorDrawable(Color.DKGRAY))
-                .error(ColorDrawable(Color.BLACK))
-                .into(imageUser)
+            val imagePath = data.imagePath
+
+            if (!imagePath.isNullOrEmpty()) {
+                val file = File(imagePath)
+                if (file.exists()) {
+                    Glide.with(requireContext())
+                        .load(file) // ← نحمّل من ملف محلي
+                        .placeholder(ColorDrawable(Color.DKGRAY))
+                        .error(ColorDrawable(Color.BLACK))
+                        .into(imageUser)
+                } else {
+                    imageUser.setImageResource(R.drawable.ic_launcher_foreground)
+                }
+            } else {
+                imageUser.setImageResource(R.drawable.ic_launcher_foreground)
+            }
 
             edFirstName.setText(data.firstName)
             edLastName.setText(data.lastName)

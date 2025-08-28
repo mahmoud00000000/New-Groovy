@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.viewModelScope
 import com.example.groovyshopping.base.BaseViewModel
@@ -28,13 +29,14 @@ import com.example.groovyshopping.utils.validateEmail
 import com.example.groovyshopping.utils.RegisterValidation
 import com.example.groovyshopping.data.User
 import com.google.firebase.storage.FirebaseStorage
+import java.io.File
+import java.io.FileOutputStream
 
 class UserAccountViewModel(
     override var mainRepository: MainRepository,
     override val appManger: AppManger,
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val storage: FirebaseStorage,
     private val contentResolver: ContentResolver
 ) : BaseViewModel(mainRepository, appManger) {
 
@@ -55,7 +57,6 @@ class UserAccountViewModel(
 
         firestore.collection("user").document(auth.uid!!).get()
             .addOnSuccessListener {
-                Log.d("getUser", "Document: ${it.exists()} - Data: ${it.data}")
                 val user = it.toObject(User::class.java)
                 user?.let {
                     viewModelScope.launch {
@@ -86,32 +87,58 @@ class UserAccountViewModel(
         }
 
         if (imageUri != null) {
-            try {
-                val inputStream = context.contentResolver.openInputStream(imageUri)
-                inputStream?.close()
-
-                saveUserInformationWithNewImage(user, imageUri, context) // ✅ تعديل هنا
-            } catch (e: Exception) {
-                saveUserInformation(user, true)
-            }
+            saveUserInformationWithLocalImage(user, imageUri, context)
         } else {
             saveUserInformation(user, true)
         }
     }
 
-    private fun saveUserInformationWithNewImage(user: User, imageUri: Uri, context: Context) {
+    // ✅ نخزن الصورة محليًا ونبعت الـ path لـ Firestore
+    private fun saveUserInformationWithLocalImage(user: User, imageUri: Uri, context: Context) {
         viewModelScope.launch {
             try {
-                val imageDirectory = storage.reference.child("profileImages/${auth.uid}.jpg")
-                // ارفع الـ Uri على طول بدل من تحويله لـ Bitmap
-                imageDirectory.putFile(imageUri).await()
+                val localPath = saveImageLocally(context, imageUri)
+                val updatedUser = user.copy(imagePath = localPath ?: "")
 
-                val imageUrl = imageDirectory.downloadUrl.await().toString()
-                saveUserInformation(user.copy(imagePath = imageUrl), false)
+                firestore.collection("user")
+                    .document(auth.uid!!)
+                    .set(updatedUser)
+                    .addOnSuccessListener {
+                        getUser()
+                        viewModelScope.launch {
+                            _updateInfo.emit(Resource.success(updatedUser))
+                        }
+                    }
+                    .addOnFailureListener {
+                        viewModelScope.launch {
+                            _updateInfo.emit(Resource.error(it.message.toString()))
+                        }
+                    }
 
             } catch (e: Exception) {
-                _updateInfo.emit(Resource.error(e.message.toString()))
+                viewModelScope.launch {
+                    _updateInfo.emit(Resource.error("Failed: ${e.message}"))
+                }
             }
+        }
+    }
+
+    // ✅ دالة تخزين الصورة في internal storage
+    private fun saveImageLocally(context: Context, uri: Uri): String? {
+        return try {
+            val inputStream = context.contentResolver.openInputStream(uri)
+            val file = File(context.filesDir, "profile_${System.currentTimeMillis()}.jpg")
+            val outputStream = FileOutputStream(file)
+
+            inputStream?.copyTo(outputStream)
+
+            inputStream?.close()
+            outputStream.close()
+
+            file.absolutePath // ده اللي هيتخزن في Firestore
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 
@@ -130,7 +157,7 @@ class UserAccountViewModel(
             }
             transaction.set(documentRef, newUser)
         }.addOnSuccessListener {
-            getUser() // ← هنا أهم تعديل
+            getUser()
             viewModelScope.launch {
                 _updateInfo.emit(Resource.success(user))
             }

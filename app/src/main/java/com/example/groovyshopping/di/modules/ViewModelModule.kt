@@ -31,7 +31,7 @@ val viewModelModule = module {
     viewModel { CartViewModel(get(), get(), get(), get(), get()) }
     viewModel { AddressViewModel(get(),get(),get(),get()) }
     viewModel { BillingViewModel(get(), get(),get(), get()) }
-    viewModel { UserAccountViewModel(get(),get(),get(),get(),get(),get()) }
+    viewModel { UserAccountViewModel(get(),get(),get(),get(),get()) }
     viewModel { OrderViewModel(get(),get(),get(),get()) }
     viewModel { ProfileViewModel(get(),get(),get(),get()) }
     viewModel { SearchViewModel(get(),get(),get()) }
